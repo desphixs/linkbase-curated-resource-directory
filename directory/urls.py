@@ -24,4 +24,9 @@ urlpatterns = [
     # For example, visiting http://127.0.0.1:8000/category/2/ passes 2 to views.category_filter().
     # We name it 'category_filter' to reference it when building dynamic links in our HTML.
     path('category/<int:category_id>/', views.category_filter, name='category_filter'),
+
+    # We map the path 'submit/' to our submit_link view function.
+    # When a visitor goes to http://127.0.0.1:8000/submit/, Django runs submit_link() view.
+    # We name it 'submit_link' so we can reference it when linking "Submit Link" buttons in our HTML.
+    path('submit/', views.submit_link, name='submit_link'),
 ]

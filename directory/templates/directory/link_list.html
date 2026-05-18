@@ -63,10 +63,10 @@
                     <a href="/admin/" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
                         <i class="fa-solid fa-lock mr-1.5 text-slate-400"></i>Admin Portal
                     </a>
-                    <!-- Button placeholder that will link to link creation later -->
-                    <button class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    <!-- Button pointing dynamically to our public suggestion form -->
+                    <a href="{% url 'directory:submit_link' %}" class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all">
                         <i class="fa-solid fa-plus text-xs"></i>Submit Link
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

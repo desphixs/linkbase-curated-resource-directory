@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50/50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkBase — Submit a Resource</title>
+    <!-- TailwindCSS CDN for premium, modern grid utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Outfit for titles and Inter for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome CDN for clean visual helper icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        // Custom Tailwind Configurations to extend branding colors and custom fonts
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            600: '#0284c7', // Slate sky-blue branding
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full font-sans text-slate-800 antialiased flex flex-col">
+
+    <!-- Premium Sticky Navigation Bar -->
+    <nav class="sticky top-0 z-40 w-full border-b border-slate-100 bg-white/80 backdrop-blur-md">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <!-- Brand Logo & Name -->
+                <div class="flex items-center gap-3">
+                    <a href="{% url 'directory:global_feed' %}" class="flex items-center gap-3 focus:outline-none">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600 border border-brand-100 shadow-sm transition-transform hover:scale-105">
+                            <i class="fa-solid fa-compass-drafting text-lg"></i>
+                        </div>
+                        <span class="font-outfit text-xl font-bold tracking-tight text-slate-900">
+                            Link<span class="text-brand-600 font-extrabold">Base</span>
+                        </span>
+                    </a>
+                </div>
+                
+                <!-- Navbar Portal Shortcut -->
+                <div class="flex items-center gap-4">
+                    <a href="/admin/" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
+                        <i class="fa-solid fa-lock mr-1.5 text-slate-400"></i>Admin Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-1 mx-auto max-w-2xl w-full px-4 py-12 sm:px-6">
+        
+        <!-- Back Navigation Link -->
+        <div class="mb-8">
+            <a href="{% url 'directory:global_feed' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors group">
+                <i class="fa-solid fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                Back to Feed
+            </a>
+        </div>
+
+        <!-- Form Shell Card -->
+        <div class="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm hover:shadow-md transition-shadow duration-300">
+            
+            <!-- Header Welcome Title -->
+            <div class="border-b border-slate-50 pb-6 mb-6">
+                <h1 class="font-outfit text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                    Suggest a <span class="text-brand-600">Resource</span>
+                </h1>
+                <p class="mt-2 text-sm text-slate-400 font-light">
+                    Discovered a stellar package, API, library, or website? Share it below so our moderation team can review and publish it.
+                </p>
+            </div>
+
+            <!-- Suggestion Form -->
+            <!-- We submit the form data using POST to hit our local submit_link view -->
+            <form method="POST" class="space-y-6">
+                <!-- ANALOGY: Think of csrf_token like a secure digital passport. -->
+                <!-- It stamps our form with a hidden security key so the server knows the form -->
+                <!-- actually came from our site, protecting us against cross-site website hackers! -->
+                {% csrf_token %}
+
+                <!-- Title Input field -->
+                <div>
+                    <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                        Resource Title
+                    </label>
+                    <input type="text" name="title" id="title" required 
+                           placeholder="e.g. Tailwind CSS Grid Generator"
+                           class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm placeholder-slate-400/80 bg-white/50 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all">
+                </div>
+
+                <!-- URL Input field -->
+                <div>
+                    <label for="url" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                        Website Address (URL)
+                    </label>
+                    <input type="url" name="url" id="url" required 
+                           placeholder="https://example.com/tool"
+                           class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm placeholder-slate-400/80 bg-white/50 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all">
+                </div>
+
+                <!-- Category Selector Select dropdown -->
+                <div>
+                    <label for="category" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                        Topic Category
+                    </label>
+                    <div class="relative">
+                        <!-- ANALOGY: This selector uses a 'for' loop tag to pull drawer names out -->
+                        <!-- of our category database crate and lists them inside our HTML dropdown list. -->
+                        <select name="category" id="category" required 
+                                class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-3 pr-10 text-sm bg-white/50 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all">
+                            <option value="" disabled selected class="text-slate-400">Select a topic folder...</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <!-- Stylized indicator arrow for select box -->
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Textarea field -->
+                <div>
+                    <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                        Brief Description
+                    </label>
+                    <textarea name="description" id="description" rows="4" required 
+                              placeholder="Describe what this resource does, who it helps, or why it belongs in our directory..."
+                              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm placeholder-slate-400/80 bg-white/50 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all resize-none"></textarea>
+                </div>
+
+                <!-- Subtle Moderator Caution Notice Banner -->
+                <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-4 flex gap-3">
+                    <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-brand-50 text-brand-600">
+                        <i class="fa-solid fa-clock-rotate-left text-[10px]"></i>
+                    </div>
+                    <div class="text-xs leading-relaxed text-slate-400">
+                        <strong class="font-semibold text-slate-500">Moderator Queue Review:</strong> Community submissions must pass security review before appearing live on the homepage directory feed.
+                    </div>
+                </div>
+
+                <!-- Action Button submission triggers -->
+                <div class="pt-4 flex items-center justify-end gap-3">
+                    <a href="{% url 'directory:global_feed' %}" 
+                       class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        <i class="fa-solid fa-plus text-xs"></i>Submit For Review
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- Footer block -->
+    <footer class="w-full border-t border-slate-100 bg-white py-6 mt-12">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-slate-400">
+                &copy; 2026 LinkBase. Designed for students, coded with love.
+            </p>
+            <div class="flex items-center gap-4 text-xs text-slate-400">
+                <span class="hover:text-slate-600 transition-colors cursor-pointer">Privacy Policy</span>
+                <span class="h-3 w-px bg-slate-200"></span>
+                <span class="hover:text-slate-600 transition-colors cursor-pointer">Terms of Service</span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
