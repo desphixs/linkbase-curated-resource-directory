@@ -17,4 +17,11 @@ urlpatterns = [
     # When a user goes to the homepage (http://127.0.0.1:8000/), Django will run global_feed().
     # We give it a name 'global_feed' so we can reference it easily elsewhere in our templates.
     path('', views.global_feed, name='global_feed'),
+
+    # We map the dynamic path 'category/<int:category_id>/' to our category_filter view function.
+    # <int:category_id> is like a flexible placeholder that tells Django: "Look for an integer 
+    # in the URL path at this position and pass it directly to our view function as the 'category_id' parameter."
+    # For example, visiting http://127.0.0.1:8000/category/2/ passes 2 to views.category_filter().
+    # We name it 'category_filter' to reference it when building dynamic links in our HTML.
+    path('category/<int:category_id>/', views.category_filter, name='category_filter'),
 ]
