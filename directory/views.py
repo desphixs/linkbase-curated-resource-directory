@@ -3,6 +3,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Category stores the topic sections; Link stores each individual resource bookmark.
 # The dot (.) means we are importing from the models.py located in the same directory folder.
 from .models import Category, Link
+# We import the Q object to build flexible, compound OR database query lookups.
+# Think of Q like the logic gates (AND/OR) in a database query. It lets us check if a search word 
+# is found in the title, description, OR category name all at once!
+from django.db.models import Q
 
 # Create your views here.
 
@@ -22,11 +26,30 @@ def global_feed(request):
     # We use .filter(is_approved=True) to make sure we filter out unapproved links from being displayed.
     approved_links = Link.objects.filter(is_approved=True)
     
-    # We place the retrieved links into a dictionary called 'context'. 
+    # We extract the 'q' search query text parameters from our request GET dictionary.
+    # If the user typed something in the search bar, this variable will hold that string; otherwise, it defaults to empty.
+    query = request.GET.get('q', '')
+    
+    # If the user typed a non-empty search query, we filter the query set dynamically.
+    if query:
+        # We filter links where the search term is found in either the Title, the Description, 
+        # OR the Category Name. __icontains means "case-insensitive contains match".
+        approved_links = approved_links.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+        
+    # We fetch all Category options from our database folder so we can populate the dropdown selector.
+    categories = Category.objects.all()
+    
+    # We place the retrieved links, categories, and query into a dictionary called 'context'. 
     # The context is like a shipping box we use to send variables from our Python view 
     # to our HTML template so the template can unpack them and show them to the user.
     context = {
-        'links': approved_links
+        'links': approved_links,
+        'categories': categories,
+        'query': query
     }
     
     # We render the template 'directory/link_list.html' and pass our context variables.

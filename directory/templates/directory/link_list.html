@@ -89,6 +89,64 @@
             </p>
         </div>
 
+        <!-- Search & Category Dropdown Section -->
+        <div class="mb-12 max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                
+                <!-- Search Form (Index Page Search) -->
+                <form method="GET" action="{% url 'directory:global_feed' %}" class="flex-1 w-full relative">
+                    <!-- ANALOGY: This search input is like a query lens. When the user types a word, -->
+                    <!-- Django's view filters our database cards to show only items matching that text! -->
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </div>
+                    <input type="text" name="q" value="{{ query }}" placeholder="Search links by title, category, or description..." 
+                           class="w-full rounded-xl border border-slate-200 bg-slate-50/30 pl-11 pr-4 py-3 text-sm placeholder-slate-400/80 focus:border-brand-600 focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all">
+                    <!-- Clear button if a query is active -->
+                    {% if query %}
+                        <a href="{% url 'directory:global_feed' %}" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </a>
+                    {% endif %}
+                </form>
+
+                <!-- Category Filtering Dropdown (Select & Go) -->
+                <div class="w-full md:w-64 relative">
+                    <!-- ANALOGY: This select dropdown uses a Javascript onchange trigger. -->
+                    <!-- When you pick a category option, the browser reads its value (which is the details page URL) -->
+                    <!-- and transports you immediately to that filtered page! -->
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                        <i class="fa-solid fa-tag text-sm"></i>
+                    </div>
+                    <select onchange="if(this.value) { window.location.href = this.value; }" 
+                            class="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/30 pl-11 pr-10 py-3 text-sm focus:border-brand-600 focus:ring-1 focus:ring-brand-600 focus:outline-none transition-all cursor-pointer">
+                        <option value="" disabled selected class="text-slate-400">Jump to Category...</option>
+                        {% for cat in categories %}
+                            <option value="{% url 'directory:category_filter' cat.id %}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- Icon Indicator -->
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Active Search Status Indicator Tag -->
+            {% if query %}
+                <div class="mt-4 flex items-center justify-between text-xs text-slate-500 bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5">
+                    <div class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-filter text-brand-600"></i>
+                        Showing results for "<strong class="font-semibold text-slate-800">{{ query }}</strong>"
+                    </div>
+                    <a href="{% url 'directory:global_feed' %}" class="font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+                        Clear Search
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
         <!-- Links Grid View Section -->
         <!-- ANALOGY: Think of this 'if' condition tag like a checklist. Before we invite passengers -->
         <!-- into the showroom, we check if there are actual items on the shelves to show them. -->
